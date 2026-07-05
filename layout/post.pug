@@ -35,12 +35,26 @@ block content
         span.waline-comment-count(id=url_for(page.path))
         span= ' ' + __('Comment')
     if page.toc
-      .clear
-        #toc.toc-article
-          .toc-title= __('contents')
-          != toc(page.content, {list_number: theme.toc_number})
-    .post-content
-      != page.content
+      button.toc-toggle(
+        type='button',
+        aria-controls='toc-panel',
+        aria-expanded='false',
+        title=__('contents')
+      )
+        i.fa.fa-list-ul.toc-toggle-open(aria-hidden='true')
+        i.fa.fa-times.toc-toggle-close(aria-hidden='true')
+        span= __('contents')
+      .toc-overlay(aria-hidden='true')
+    .post-body(class=page.toc ? 'has-toc' : '')
+      if page.toc
+        aside#toc-panel.post-toc(aria-hidden='true')
+          #toc.toc-article
+            .toc-title= __('contents')
+            != toc(page.content, {list_number: theme.toc_number})
+      .post-content
+        != page.content
+    if page.toc
+      script(type='text/javascript', src=url_for(theme.js) + '/toc.js' + '?v=' + theme.version, defer)
     if theme.donate.enable == true && page.donate != false
       include _widget/donate.pug
 
